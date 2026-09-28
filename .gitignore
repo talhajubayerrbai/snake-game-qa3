@@ -1,0 +1,18 @@
+# Terraform
+infra/.terraform/
+infra/.terraform.lock.hcl
+infra/*.tfstate
+infra/*.tfstate.backup
+infra/terraform.tfvars
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# SSH keys
+*.pem
+*.key
+
+# OS
+.DS_Store

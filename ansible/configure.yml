@@ -1,0 +1,104 @@
+---
+- name: Configure snake-game-qa3
+  hosts: all
+  become: yes
+  vars:
+    artifact_version: "{{ artifact_version }}"
+    artifact_bucket: "snake-game-qa3-artifacts-241533126054"
+    artifact_name: "snake-game-{{ artifact_version }}.tar.gz"
+    web_root: "/usr/share/nginx/html"
+
+  tasks:
+    - name: Install nginx and AWS CLI
+      dnf:
+        name:
+          - nginx
+          - awscli
+        state: present
+
+    - name: Ensure web root exists
+      file:
+        path: "{{ web_root }}"
+        state: directory
+        owner: nginx
+        group: nginx
+        mode: '0755'
+
+    - name: Download versioned artifact from S3
+      command: >
+        aws s3 cp
+        s3://{{ artifact_bucket }}/{{ artifact_name }}
+        /tmp/{{ artifact_name }}
+      environment:
+        AWS_DEFAULT_REGION: us-east-1
+
+    - name: Extract artifact to web root
+      unarchive:
+        src: /tmp/{{ artifact_name }}
+        dest: "{{ web_root }}"
+        remote_src: yes
+        extra_opts: ["--warning=no-file-changed", "--strip-components=0"]
+
+    - name: Set correct ownership on web files
+      file:
+        path: "{{ web_root }}"
+        owner: nginx
+        group: nginx
+        recurse: yes
+
+    - name: Write nginx configuration
+      copy:
+        dest: /etc/nginx/conf.d/snake-game.conf
+        content: |
+          server {
+              listen 80 default_server;
+              server_name _;
+
+              root /usr/share/nginx/html;
+              index index.html;
+
+              location = /health {
+                  add_header Content-Type text/plain;
+                  return 200 "OK";
+              }
+
+              location = / {
+                  try_files /index.html =404;
+              }
+
+              location = /index.html {
+                  try_files $uri =404;
+              }
+
+              location = /game.js {
+                  try_files $uri =404;
+              }
+
+              location / {
+                  return 404;
+              }
+          }
+
+    - name: Remove default nginx config
+      file:
+        path: /etc/nginx/conf.d/default.conf
+        state: absent
+
+    - name: Validate nginx configuration
+      command: nginx -t
+      changed_when: false
+
+    - name: Enable and start nginx
+      systemd:
+        name: nginx
+        state: restarted
+        enabled: yes
+        daemon_reload: yes
+
+    - name: Verify health endpoint locally
+      uri:
+        url: http://127.0.0.1/health
+        return_content: yes
+        status_code: 200
+      retries: 5
+      delay: 3

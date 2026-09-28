@@ -1,0 +1,62 @@
+{
+  "edges": [
+    {
+      "from": "snake_game_ec2",
+      "id": "snake_game_ec2-artifact_bucket-0",
+      "kind": "uses",
+      "props": {},
+      "to": "artifact_bucket"
+    },
+    {
+      "from": "snake_game_ec2",
+      "id": "snake_game_ec2-iam_profile-0",
+      "kind": "uses",
+      "props": {},
+      "to": "iam_profile"
+    }
+  ],
+  "groups": [
+    {
+      "id": "snake_game_qa3_env",
+      "kind": "environment",
+      "name": "snake-game-qa3"
+    }
+  ],
+  "nodes": [
+    {
+      "group": "snake_game_qa3_env",
+      "id": "snake_game_ec2",
+      "name": "snake-game-qa3",
+      "props": {
+        "instance_type": "t3.micro",
+        "region": "us-east-1"
+      },
+      "type": "service.ec2"
+    },
+    {
+      "group": "snake_game_qa3_env",
+      "id": "artifact_bucket",
+      "name": "snake-game-qa3-artifacts-241533126054",
+      "props": {
+        "name": "snake-game-qa3-artifacts-241533126054",
+        "notes": "versioning enabled, SHA-tagged tarballs",
+        "region": "us-east-1"
+      },
+      "type": "resource.bucket"
+    },
+    {
+      "group": "snake_game_qa3_env",
+      "id": "iam_profile",
+      "name": "IAM Instance Profile (SSM)",
+      "props": {
+        "uri": "arn:aws:iam::241533126054:instance-profile/snake-game-qa3-profile"
+      },
+      "type": "resource.other"
+    }
+  ],
+  "scope": {
+    "id": "svc_01a0e96a0679590d98b95f80c119041a",
+    "kind": "service"
+  },
+  "version": 1
+}

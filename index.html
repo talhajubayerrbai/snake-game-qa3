@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snake Game</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: 'Courier New', monospace; color: #e0e0e0; }
+    h1 { font-size: 2rem; margin-bottom: 0.5rem; color: #00d4aa; letter-spacing: 4px; text-transform: uppercase; }
+    #score-board { font-size: 1.1rem; margin-bottom: 1rem; color: #aaa; }
+    #score-board span { color: #00d4aa; font-weight: bold; }
+    canvas { border: 2px solid #00d4aa; border-radius: 4px; box-shadow: 0 0 20px rgba(0,212,170,0.3); }
+    #message { margin-top: 1rem; font-size: 1rem; color: #ff6b6b; min-height: 1.5rem; }
+    #instructions { margin-top: 0.5rem; font-size: 0.8rem; color: #555; }
+  </style>
+</head>
+<body>
+  <h1>Snake</h1>
+  <div id="score-board">Score: <span id="score">0</span> &nbsp;|&nbsp; High Score: <span id="high-score">0</span></div>
+  <canvas id="gameCanvas" width="400" height="400"></canvas>
+  <div id="message">Press any arrow key or WASD to start</div>
+  <div id="instructions">Arrow keys or WASD to move &nbsp;|&nbsp; P to pause</div>
+  <script src="game.js"></script>
+</body>
+</html>
